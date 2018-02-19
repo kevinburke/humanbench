@@ -12,8 +12,6 @@ import (
 	"strings"
 	"syscall"
 	"unicode"
-
-	"golang.org/x/perf/benchstat"
 )
 
 func usage() {
@@ -36,7 +34,7 @@ func toString(firstTabPos int, fields []string) string {
 		if err != nil {
 			panic(err)
 		}
-		scaler := benchstat.NewScaler(val, fields[i+1])
+		scaler := NewScaler(val, fields[i+1])
 		replacement := scaler(val) + "/op"
 		b.WriteByte('\t')
 		if fields[i+1] == "ns/op" {
@@ -108,16 +106,25 @@ func main() {
 	signal.Notify(sigs)
 	for {
 		select {
-		case line := <-txtCh:
+		case line, more := <-txtCh:
+			if !more {
+				continue
+			}
 			fmt.Println(parseLine(line))
-		case sig := <-sigs:
+		case sig, more := <-sigs:
+			if !more {
+				continue
+			}
 			if sig == syscall.SIGSTOP || sig == syscall.SIGCHLD {
 				continue
 			}
 			if err = cmd.Process.Signal(sig); err != nil {
 				log.Fatalf("could not send signal %s: %v", sig, err)
 			}
-		case err := <-bufErrCh:
+		case err, more := <-bufErrCh:
+			if !more {
+				continue
+			}
 			log.Fatalf("buf error: %v", err)
 		case err := <-waitCh:
 			var waitStatus syscall.WaitStatus
