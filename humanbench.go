@@ -27,7 +27,7 @@ func toString(firstTabPos int, fields []string) string {
 	fmt.Fprintf(&b, "%8s", fields[1])
 	for i := 2; i+2 <= len(fields); i += 2 {
 		if fields[i+1] == "MB/s" {
-			fmt.Fprintf(&b, "\t%7sMB/s ", fields[i])
+			fmt.Fprintf(&b, "\t%8sMB/s ", fields[i])
 			continue
 		}
 		val, err := strconv.ParseFloat(fields[i], 64)
