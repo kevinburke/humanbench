@@ -35,14 +35,17 @@ func toString(firstTabPos int, fields []string) string {
 			panic(err)
 		}
 		scaler := NewScaler(val, fields[i+1])
-		replacement := scaler(val) + "/op"
+		replacement := scaler(val)
 		b.WriteByte('\t')
-		if fields[i+1] == "ns/op" {
-			fmt.Fprintf(&b, "%18s", replacement)
-		} else {
+		switch fields[i+1] {
+		case "ns/op":
+			fmt.Fprintf(&b, "%18s", replacement+"/op")
+		case "allocs/op":
+			fmt.Fprintf(&b, "%18s", replacement+" allocs/op")
+		default:
 			//wid := 7 + 1 + len(fields[i+1])
 			//fmt.Fprintf(&b, "%"+strconv.Itoa(wid)+"s", replacement)
-			fmt.Fprintf(&b, "%12s", replacement)
+			fmt.Fprintf(&b, "%12s", replacement+"/op")
 		}
 	}
 	return b.String()

@@ -20,7 +20,7 @@ BenchmarkNewDirectory-4          	       5	          319ms/op	    227MB/op	     
 
 func TestBenchmarkFmt(t *testing.T) {
 	text := "BenchmarkIndexRune-4             	50000000	        23.2 ns/op	  44.75 MB/s	       0 B/op	       0 allocs/op"
-	want := "BenchmarkIndexRune-4             	50000000	         23.2ns/op	  44.75MB/s 	    0.00B/op	     0.00/op"
+	want := "BenchmarkIndexRune-4             \t50000000\t         23.2ns/op\t   44.75MB/s \t    0.00B/op\t       0 allocs/op"
 	fields := strings.Fields(text)
 	firstTabPos := strings.IndexByte(text, '\t')
 	result := toString(firstTabPos, fields)
